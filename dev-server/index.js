@@ -3,6 +3,7 @@
 const express = require('express')
 const { createPageRenderer } = require('vite-plugin-ssr')
 const vite = require('vite')
+const { telefunc, telefuncConfig, provideTelefuncContext } = require('telefunc')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -21,7 +22,25 @@ async function startServer() {
       server: { middlewareMode: 'ssr' },
     })
     app.use(viteDevServer.middlewares)
+    telefuncConfig.viteDevServer = viteDevServer
   }
+
+  app.use(function (req, _res, next) {
+    req.user = {
+      id: 0,
+      name: 'Elisabeth',
+    }
+    next()
+  })
+
+  app.use(express.text())
+  app.all('/_telefunc', async (req, res) => {
+    const { user } = req
+    provideTelefuncContext({ user })
+    const httpResponse = await telefunc({ url: req.originalUrl, method: req.method, body: req.body })
+    const { body, statusCode, contentType } = httpResponse
+    res.status(statusCode).type(contentType).send(body)
+  })
 
   const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
