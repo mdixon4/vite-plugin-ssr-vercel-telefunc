@@ -1,5 +1,5 @@
 import { createPageRenderer } from 'vite-plugin-ssr'
-const { telefunc, telefuncConfig, provideTelefuncContext } = require('telefunc')
+// const { telefunc, telefuncConfig, provideTelefuncContext } = require('telefunc')
 // `importBuild.js` enables Vercel to bundle our serverless functions, see https://vite-plugin-ssr.com/vercel and https://vite-plugin-ssr.com/importBuild.js
 import '../dist/server/importBuild.js'
 
@@ -10,19 +10,19 @@ export default async function handler(req, res) {
 
   console.log('Request to url:', url)
 
-  if (url.startsWith('/_telefunc')) {
-    // provideTelefuncContext({})
-    const body = await readTextStream(req)
-    const httpResponse = await telefunc({ url, method: req.method, body })
-    if (httpResponse) {
-      const { body, statusCode, contentType } = httpResponse
+  // if (url.startsWith('/_telefunc')) {
+  //   // provideTelefuncContext({})
+  //   const body = await readTextStream(req)
+  //   const httpResponse = await telefunc({ url, method: req.method, body })
+  //   if (httpResponse) {
+  //     const { body, statusCode, contentType } = httpResponse
 
-      res.statusCode = statusCode
-      res.setHeader('content-type', contentType)
-      res.end(body)
-      return
-    }
-  }
+  //     res.statusCode = statusCode
+  //     res.setHeader('content-type', contentType)
+  //     res.end(body)
+  //     return
+  //   }
+  // }
 
   const pageContextInit = { url }
   const pageContext = await renderPage(pageContextInit)
