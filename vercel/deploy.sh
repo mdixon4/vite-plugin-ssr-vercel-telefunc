@@ -6,7 +6,7 @@
 rm -rf .output
 
 # Step 2: Build the app
-yarn build
+npm run build
 
 # Step 3: Create output folder
 mkdir .output
@@ -18,7 +18,7 @@ cp -a dist/client/. .output/static
 # Step 5: Bundle render function with it's depdendencies to the single javascript file
 # If you are using typescript, simply replace extension with ".ts"
 mkdir -p .output/server/pages
-yarn ncc build vercel/render.js --minify --out .output/server/pages
+ncc build vercel/render.js --minify --out .output/server/pages
 
 # Step 6: Make render function run on every request (catch all)
 cat > .output/routes-manifest.json << EOF
